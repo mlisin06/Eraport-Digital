@@ -6,12 +6,12 @@
   <title>E-Rapor Digital & Management System</title>
   
   <!-- Favicon (Ikon di Tab Browser Menggunakan Logo Lokal) -->
-  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="icon" type="image/png" href="logo.jpg">
   
   <!-- Open Graph Meta Tags (Preview Gambar Saat Dishare ke WhatsApp/Media Sosial) -->
   <meta property="og:title" content="E-Rapor Digital & Management System">
   <meta property="og:description" content="Portal nilai siswa dan manajemen rapor digital sekolah yang dinamis dan terintegrasi.">
-  <meta property="og:image" content="logo.png">
+  <meta property="og:image" content="logo.jpg">
   <meta property="og:type" content="website">
 
   <!-- Tailwind CSS CDN -->
@@ -292,7 +292,7 @@
               <input type="text" id="school-address-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Nama File Logo di Repo (Contoh: logo.png)</label>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Nama File Logo di Repo (Contoh: logo.jpg)</label>
               <input type="text" id="school-logo-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono">
             </div>
           </div>
@@ -471,7 +471,7 @@
       schoolIdentity: {
         name: 'SD NEGERI 03 LIMBANGAN',
         address: 'Jl. Raya Limbangan No. 45, Kendal',
-        logoUrl: 'logo.png'
+        logoUrl: 'logo.jpg'
       },
       classes: ['X-IPA-1', 'X-IPA-2', 'XI-IPA-1'],
       subjects: ['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'Fisika', 'Kimia', 'Biologi'],
@@ -534,14 +534,14 @@
       const sch = appData.schoolIdentity || {};
       document.getElementById('school-name-input').value = sch.name || '';
       document.getElementById('school-address-input').value = sch.address || '';
-      document.getElementById('school-logo-input').value = sch.logoUrl || 'logo.png';
+      document.getElementById('school-logo-input').value = sch.logoUrl || 'logo.jpg';
     }
 
     function saveSchoolIdentity() {
       appData.schoolIdentity = {
         name: document.getElementById('school-name-input').value || 'SEKOLAH DIGITAL',
         address: document.getElementById('school-address-input').value || '',
-        logoUrl: document.getElementById('school-logo-input').value || 'logo.png'
+        logoUrl: document.getElementById('school-logo-input').value || 'logo.jpg'
       };
       saveLocalStorageData();
       renderStudentPortal();
@@ -684,7 +684,7 @@
         return;
       }
 
-      const sch = appData.schoolIdentity || { name: 'SEKOLAH DIGITAL', address: '', logoUrl: 'logo.png' };
+      const sch = appData.schoolIdentity || { name: 'SEKOLAH DIGITAL', address: '', logoUrl: 'logo.jpg' };
       const student = appData.students.find(s => s.id === studentId);
       const studentGrades = (appData.grades[year] && appData.grades[year][sem] && appData.grades[year][sem][studentId]) ? appData.grades[year][sem][studentId] : {};
       const studentReview = (appData.reviews[year] && appData.reviews[year][sem] && appData.reviews[year][sem][studentId]) ? appData.reviews[year][sem][studentId] : 'Belum ada catatan khusus dari wali kelas.';
