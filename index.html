@@ -5,13 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Rapor Digital & Management System</title>
   
+  <!-- Favicon (Ikon di Tab Browser Menggunakan Logo Lokal) -->
+  <link rel="icon" type="image/png" href="logo.png">
+  
+  <!-- Open Graph Meta Tags (Preview Gambar Saat Dishare ke WhatsApp/Media Sosial) -->
+  <meta property="og:title" content="E-Rapor Digital & Management System">
+  <meta property="og:description" content="Portal nilai siswa dan manajemen rapor digital sekolah yang dinamis dan terintegrasi.">
+  <meta property="og:image" content="logo.png">
+  <meta property="og:type" content="website">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- QRCode.js CDN for Generating Verification QR Codes -->
+  <!-- QRCode.js CDN for Verification QR Codes -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <!-- Firebase SDKs (v9 Compat Mode) -->
@@ -20,14 +29,27 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
+    
     @media print {
-      .no-print { display: none !important; }
-      .print-only { display: block !important; }
-      body { background-color: white !important; color: black !important; }
-      .card-print { border: none !important; box-shadow: none !important; padding: 0 !important; }
+      .no-print { 
+        display: none !important; 
+      }
+      .print-only { 
+        display: block !important; 
+      }
+      body { 
+        background-color: white !important; 
+        color: black !important; 
+      }
+      .card-print { 
+        border: none !important; 
+        box-shadow: none !important; 
+        padding: 0 !important; 
+      }
     }
   </style>
 </head>
@@ -51,14 +73,11 @@
 
         <!-- Role Selector & Status Bar -->
         <div class="flex items-center space-x-3">
-          
-          <!-- Firebase Connection Badge -->
           <button id="fb-status-badge" onclick="checkAdminAccess('config')" class="hidden sm:flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
             <span id="fb-status-dot" class="w-2 h-2 rounded-full bg-slate-400"></span>
             <span id="fb-status-text">Mode Local</span>
           </button>
 
-          <!-- Toggle View Mode Buttons -->
           <div class="bg-indigo-950/60 p-1 rounded-xl flex items-center border border-indigo-700/50">
             <button id="nav-btn-student" onclick="switchView('student')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 bg-indigo-600 text-white shadow-sm">
               <i class="fa-solid fa-user-graduate"></i>
@@ -69,7 +88,6 @@
               <span id="admin-nav-text">Akses Admin</span>
             </button>
           </div>
-
         </div>
 
       </div>
@@ -79,12 +97,8 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- ========================================== -->
-    <!-- VIEW 1: PORTAL SISWA & REVIEW KHUSUS SISWA -->
-    <!-- ========================================== -->
+    <!-- VIEW 1: PORTAL SISWA -->
     <section id="student-view" class="space-y-6">
-      
-      <!-- Filter Bar Dinamis -->
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 no-print space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
@@ -103,7 +117,6 @@
             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tahun Ajaran</label>
             <select id="filter-academic-year" onchange="renderStudentPortal()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
           </div>
-          
           <div>
             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Semester</label>
             <select id="filter-semester" onchange="renderStudentPortal()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -111,12 +124,10 @@
               <option value="2">Semester 2 (Genap)</option>
             </select>
           </div>
-
           <div>
             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Kelas</label>
             <select id="filter-class" onchange="onClassFilterChange()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
           </div>
-
           <div>
             <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Pilih Siswa</label>
             <select id="filter-student" onchange="renderStudentPortal()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 text-indigo-900"></select>
@@ -124,17 +135,11 @@
         </div>
       </div>
 
-      <!-- Content Area Rapor Digital -->
       <div id="student-report-card" class="space-y-6"></div>
-
     </section>
 
-    <!-- ========================================== -->
-    <!-- VIEW 2: PORTAL ADMIN & KELOLA DATA         -->
-    <!-- ========================================== -->
+    <!-- VIEW 2: PORTAL ADMIN -->
     <section id="admin-view" class="hidden space-y-6">
-      
-      <!-- Sub-Header Admin -->
       <div class="bg-indigo-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <span class="bg-indigo-800 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-indigo-700 uppercase tracking-wider">
@@ -157,7 +162,7 @@
         </div>
       </div>
 
-      <!-- Admin Tabs Navigation -->
+      <!-- Admin Tabs -->
       <div class="flex border-b border-slate-200 overflow-x-auto space-x-2 no-scrollbar">
         <button id="admin-tab-btn-dashboard" onclick="switchAdminTab('dashboard')" class="px-4 py-3 font-bold text-xs sm:text-sm border-b-2 border-indigo-600 text-indigo-600 flex items-center gap-2 whitespace-nowrap">
           <i class="fa-solid fa-chart-pie"></i> Dashboard & Stats
@@ -170,7 +175,7 @@
         </button>
       </div>
 
-      <!-- TAB 1: DASHBOARD ANALYTICS -->
+      <!-- TAB 1: DASHBOARD -->
       <div id="admin-tab-dashboard" class="space-y-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
@@ -182,7 +187,7 @@
             </div>
             <p id="stat-total-students" class="text-2xl font-extrabold text-slate-800 mt-2">0</p>
           </div>
-
+          
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-slate-500 uppercase">Total Rombel Kelas</span>
@@ -192,7 +197,7 @@
             </div>
             <p id="stat-total-classes" class="text-2xl font-extrabold text-slate-800 mt-2">0</p>
           </div>
-
+          
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-slate-500 uppercase">Rata-Rata Umum</span>
@@ -202,7 +207,7 @@
             </div>
             <p id="stat-avg-score" class="text-2xl font-extrabold text-slate-800 mt-2">0.0</p>
           </div>
-
+          
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-slate-500 uppercase">Siswa Perlu Bimbingan</span>
@@ -221,7 +226,6 @@
               <canvas id="chart-class-avg"></canvas>
             </div>
           </div>
-          
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <h3 class="font-bold text-slate-800 text-sm border-b pb-2">Siswa Berprestasi (Top Performers)</h3>
             <div id="top-students-list" class="space-y-3"></div>
@@ -229,16 +233,17 @@
         </div>
       </div>
 
-      <!-- TAB 2: INPUT NILAI & REVIEW (DENGAN EXCEL COPY PASTE) -->
+      <!-- TAB 2: INPUT NILAI -->
       <div id="admin-tab-grades" class="hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b pb-3">
             <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
               <i class="fa-solid fa-sliders text-indigo-600"></i> Pengisian Nilai & Review Khusus
             </h3>
-            
             <div class="bg-slate-100 p-1 rounded-xl flex items-center self-start border">
-              <button id="btn-mode-single" onclick="setGradeInputMode('single')" class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-indigo-900 shadow-sm">Per Siswa</button>
+              <button id="btn-mode-single" onclick="setGradeInputMode('single')" class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-indigo-900 shadow-sm">
+                Per Siswa
+              </button>
               <button id="btn-mode-bulk" onclick="setGradeInputMode('bulk')" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-500 hover:text-indigo-900">
                 <i class="fa-solid fa-file-excel text-emerald-600 mr-1"></i> Input Sekaligus (Copy Excel)
               </button>
@@ -271,13 +276,11 @@
         <div id="admin-grade-form-container"></div>
       </div>
 
-      <!-- TAB 3: KELOLA MASTER DATA (KOP SEKOLAH, DAHUN DINAMIS, KELAS, MAPEL, & SISWA) -->
+      <!-- TAB 3: KELOLA MASTER DATA -->
       <div id="admin-tab-master" class="hidden space-y-6">
-
-        <!-- KOP & IDENTITAS SEKOLAH CONFIG CARD -->
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h3 class="font-bold text-slate-800 text-sm border-b pb-2 flex items-center gap-2">
-            <i class="fa-solid fa-building-columns text-indigo-600"></i> Pengaturan Kop & Identitas Sekolah (Untuk Cetak Rapor)
+            <i class="fa-solid fa-building-columns text-indigo-600"></i> Pengaturan Kop & Identitas Sekolah (Logo Lokal)
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
@@ -289,8 +292,8 @@
               <input type="text" id="school-address-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">URL Logo Sekolah (PNG/SVG)</label>
-              <input type="text" id="school-logo-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
+              <label class="block text-xs font-bold text-slate-600 mb-1">Nama File Logo di Repo (Contoh: logo.png)</label>
+              <input type="text" id="school-logo-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono">
             </div>
           </div>
           <button onclick="saveSchoolIdentity()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
@@ -299,11 +302,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Column 1: Classes, Subjects & Dynamic Academic Years -->
           <div class="space-y-6">
-            
-            <!-- Dynamic Academic Years List -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
               <h3 class="font-bold text-slate-800 text-sm border-b pb-2 flex items-center justify-between">
                 <span>Daftar Tahun Ajaran (Dinamis)</span>
@@ -312,7 +311,6 @@
               <ul id="master-year-list" class="divide-y text-sm max-h-48 overflow-y-auto"></ul>
             </div>
 
-            <!-- Manage Classes -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
               <h3 class="font-bold text-slate-800 text-sm border-b pb-2 flex items-center justify-between">
                 <span>Daftar Kelas (Rombel)</span>
@@ -321,7 +319,6 @@
               <ul id="master-class-list" class="divide-y text-sm"></ul>
             </div>
 
-            <!-- Manage Subjects -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
               <h3 class="font-bold text-slate-800 text-sm border-b pb-2 flex items-center justify-between">
                 <span>Daftar Mata Pelajaran</span>
@@ -329,10 +326,8 @@
               </h3>
               <ul id="master-subject-list" class="divide-y text-sm max-h-60 overflow-y-auto"></ul>
             </div>
-
           </div>
 
-          <!-- Column 2: Manage Students Table -->
           <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 gap-3">
               <div>
@@ -344,16 +339,13 @@
                 <button onclick="downloadStudentCsvTemplate()" class="px-2.5 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl text-xs font-bold transition border border-emerald-200 flex items-center gap-1">
                   <i class="fa-solid fa-file-csv"></i> Template
                 </button>
-                
                 <label class="px-2.5 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-xl text-xs font-bold cursor-pointer transition border border-indigo-200 flex items-center gap-1">
                   <i class="fa-solid fa-file-import"></i> Impor CSV
                   <input type="file" id="csv-file-input" accept=".csv" onchange="importStudentsCsv(event)" class="hidden">
                 </label>
-
                 <button onclick="exportStudentsToCsv()" class="px-2.5 py-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
                   <i class="fa-solid fa-file-export"></i> Ekspor
                 </button>
-
                 <button onclick="promptAddStudent()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
                   <i class="fa-solid fa-user-plus"></i> + Siswa
                 </button>
@@ -374,12 +366,9 @@
               </table>
             </div>
           </div>
-
         </div>
       </div>
-
     </section>
-
   </main>
 
   <!-- FOOTER -->
@@ -389,7 +378,7 @@
     </div>
   </footer>
 
-  <!-- MODAL: VERIFIKASI PIN ADMIN -->
+  <!-- MODAL: PIN ADMIN -->
   <div id="modal-admin-auth" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-5 border border-slate-100">
       <div class="text-center space-y-2">
@@ -397,15 +386,13 @@
           <i class="fa-solid fa-shield-halved"></i>
         </div>
         <h3 class="font-bold text-lg text-slate-800">Verifikasi PIN Admin</h3>
-        <p class="text-xs text-slate-500">Masukkan PIN Keamanan untuk membuka akses Panel Administrator & Pengaturan.</p>
+        <p class="text-xs text-slate-500">Masukkan PIN Keamanan untuk membuka akses Panel Administrator.</p>
       </div>
-
       <div>
         <label class="block text-xs font-bold text-slate-600 uppercase mb-1">PIN Rahasia</label>
-        <input type="password" id="admin-pin-input" placeholder="Masukkan PIN (Default: 123456)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-center font-mono text-lg tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-        <p id="pin-error-msg" class="text-xs text-rose-500 mt-1 font-semibold hidden">PIN Salah! Silakan coba lagi.</p>
+        <input type="password" id="admin-pin-input" placeholder="PIN (Default: 123456)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-center font-mono text-lg tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        <p id="pin-error-msg" class="text-xs text-rose-500 mt-1 font-semibold hidden">PIN Salah!</p>
       </div>
-
       <div class="flex space-x-3">
         <button onclick="closeSecurityAuthModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition">Batal</button>
         <button onclick="verifyAdminPin()" class="w-1/2 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-md">Buka Akses</button>
@@ -413,33 +400,30 @@
     </div>
   </div>
 
-  <!-- MODAL: UBAH PIN ADMIN -->
+  <!-- MODAL: UBAH PIN -->
   <div id="modal-change-pin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-slate-100">
       <div class="text-center space-y-1">
         <h3 class="font-bold text-lg text-slate-800">Ubah PIN Rahasia Admin</h3>
-        <p class="text-xs text-slate-500">Perbarui PIN keamanan untuk mencegah akses yang tidak diinginkan.</p>
       </div>
-
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">PIN Saat Ini</label>
-          <input type="password" id="input-old-pin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+          <input type="password" id="input-old-pin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">PIN Baru</label>
-          <input type="password" id="input-new-pin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+          <input type="password" id="input-new-pin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
         </div>
       </div>
-
       <div class="flex space-x-3 pt-2">
         <button onclick="closeSecurityModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition">Batal</button>
-        <button onclick="saveNewPin()" class="w-1/2 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-md">Simpan PIN</button>
+        <button onclick="saveNewPin()" class="w-1/2 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-md">Simpan</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: CONFIGURATION FIREBASE -->
+  <!-- MODAL: FIREBASE CONFIG -->
   <div id="modal-firebase-config" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5 border border-slate-100 max-h-[90vh] overflow-y-auto">
       <div class="flex items-start justify-between border-b border-slate-100 pb-3">
@@ -447,47 +431,20 @@
           <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
             <i class="fa-solid fa-fire text-amber-500"></i> Konfigurasi Realtime Firebase
           </h3>
-          <p class="text-xs text-slate-500">Pengaturan ini hanya dapat diakses oleh Administrator.</p>
         </div>
         <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600 text-lg">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-
       <div class="space-y-2">
-        <label class="block text-xs font-bold text-slate-700 uppercase">Tempelkan Kode firebaseConfig JavaScript Di Sini</label>
-        <textarea id="raw-firebase-code" rows="7" placeholder='const firebaseConfig = {
-  apiKey: "AIzaSy...",
-  authDomain: "proyekku.firebaseapp.com",
-  databaseURL: "https://proyekku-default-rtdb.firebaseio.com",
-  projectId: "proyekku",
-  storageBucket: "proyekku.firebasestorage.app",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
-};' class="w-full bg-slate-900 text-emerald-400 font-mono text-xs p-3.5 rounded-2xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400"></textarea>
+        <label class="block text-xs font-bold text-slate-700 uppercase">Tempelkan Kode firebaseConfig JavaScript</label>
+        <textarea id="raw-firebase-code" rows="7" placeholder="const firebaseConfig = { ... };" class="w-full bg-slate-900 text-emerald-400 font-mono text-xs p-3.5 rounded-2xl border border-slate-800 focus:outline-none"></textarea>
       </div>
-
-      <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-2 text-xs text-amber-900">
-        <p class="font-bold flex items-center gap-1.5">
-          <i class="fa-solid fa-shield-cat text-amber-600"></i> Penting untuk Keamanan Firebase Console:
-        </p>
-        <p class="text-slate-600">Atur menu <b>Realtime Database &gt; Rules</b> di Firebase Console menjadi:</p>
-        <pre class="bg-amber-100/70 p-2 rounded-lg font-mono text-[11px] text-slate-800">
-{
-  "rules": {
-    ".read": true,
-    ".write": "auth != null"
-  }
-}</pre>
-      </div>
-
       <div class="flex items-center justify-between border-t border-slate-100 pt-4">
-        <button onclick="resetFirebaseConfig()" class="text-xs text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1">
-          <i class="fa-solid fa-trash-arrow-up"></i> Hapus Konfigurasi (Reset)
-        </button>
+        <button onclick="resetFirebaseConfig()" class="text-xs text-rose-600 hover:text-rose-700 font-bold">Hapus (Reset)</button>
         <div class="flex space-x-2">
-          <button onclick="closeConfigModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition">Batal</button>
-          <button onclick="saveFirebaseConfigFromCode()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-md">Simpan & Sambungkan</button>
+          <button onclick="closeConfigModal()" class="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-xl">Batal</button>
+          <button onclick="saveFirebaseConfigFromCode()" class="px-5 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow-md">Simpan</button>
         </div>
       </div>
     </div>
@@ -499,7 +456,7 @@
     <span id="toast-msg">Notifikasi</span>
   </div>
 
-  <!-- JAVASCRIPT ENGINE -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
     const DEFAULT_PIN = "123456";
     let adminPin = localStorage.getItem('erapor_admin_pin') || DEFAULT_PIN;
@@ -513,12 +470,12 @@
     let appData = {
       schoolIdentity: {
         name: 'SD NEGERI 03 LIMBANGAN',
-        address: 'Jl. Raya Limbangan No. 45, Kendal, Jawa Tengah',
-        logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_Tut_Wuri_Handayani.png'
+        address: 'Jl. Raya Limbangan No. 45, Kendal',
+        logoUrl: 'logo.png'
       },
       classes: ['X-IPA-1', 'X-IPA-2', 'XI-IPA-1'],
       subjects: ['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'Fisika', 'Kimia', 'Biologi'],
-      academicYears: ['2023/2024', '2024/2025', '2025/2026', '2026/2027', '2027/2028'],
+      academicYears: ['2023/2024', '2024/2025', '2025/2026', '2026/2027', '2027/2028', '2028/2029'],
       students: [
         { id: '1001', name: 'Ahmad Rizky', class: 'X-IPA-1' },
         { id: '1002', name: 'Siti Nurhaliza', class: 'X-IPA-1' },
@@ -535,8 +492,8 @@
       reviews: {
         '2025/2026': {
           '1': {
-            '1001': 'Ahmad menunjukkan ketekunan yang sangat baik dalam memahami materi sains. Perlu sedikit peningkatan konsistensi.',
-            '1002': 'Siti sangat proaktif dan berprestasi unggul di semua bidang studi. Pertahankan prestasi!'
+            '1001': 'Ahmad menunjukkan ketekunan yang sangat baik dalam memahami materi sains.',
+            '1002': 'Siti sangat proaktif dan berprestasi unggul di semua bidang studi.'
           }
         }
       }
@@ -560,7 +517,9 @@
         try { 
           const parsed = JSON.parse(saved);
           appData = { ...appData, ...parsed };
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+          console.error(e); 
+        }
       }
     }
 
@@ -575,21 +534,20 @@
       const sch = appData.schoolIdentity || {};
       document.getElementById('school-name-input').value = sch.name || '';
       document.getElementById('school-address-input').value = sch.address || '';
-      document.getElementById('school-logo-input').value = sch.logoUrl || '';
+      document.getElementById('school-logo-input').value = sch.logoUrl || 'logo.png';
     }
 
     function saveSchoolIdentity() {
       appData.schoolIdentity = {
         name: document.getElementById('school-name-input').value || 'SEKOLAH DIGITAL',
         address: document.getElementById('school-address-input').value || '',
-        logoUrl: document.getElementById('school-logo-input').value || ''
+        logoUrl: document.getElementById('school-logo-input').value || 'logo.png'
       };
       saveLocalStorageData();
       renderStudentPortal();
       showToast('Identitas Kop Sekolah Berhasil Disimpan!', 'success');
     }
 
-    // AUTHENTICATION & ACCESS CONTROL
     function checkAdminAccess(target) {
       if (isAdminUnlocked) {
         if (target === 'admin') switchView('admin');
@@ -611,7 +569,6 @@
         closeSecurityAuthModal();
         document.getElementById('admin-lock-icon').className = 'fa-solid fa-lock-open text-emerald-400';
         showToast('Akses Admin Berhasil!', 'success');
-
         if (pendingActionTarget === 'admin') switchView('admin');
         if (pendingActionTarget === 'config') openConfigModal();
         pendingActionTarget = null;
@@ -627,30 +584,35 @@
       showToast('Akses Admin Dikunci Kembali.', 'info');
     }
 
-    function closeSecurityAuthModal() {
-      document.getElementById('modal-admin-auth').classList.add('hidden');
+    function closeSecurityAuthModal() { 
+      document.getElementById('modal-admin-auth').classList.add('hidden'); 
     }
 
-    function openSecurityModal() {
-      document.getElementById('modal-change-pin').classList.remove('hidden');
+    function openSecurityModal() { 
+      document.getElementById('modal-change-pin').classList.remove('hidden'); 
     }
 
-    function closeSecurityModal() {
-      document.getElementById('modal-change-pin').classList.add('hidden');
+    function closeSecurityModal() { 
+      document.getElementById('modal-change-pin').classList.add('hidden'); 
     }
 
     function saveNewPin() {
       const oldPin = document.getElementById('input-old-pin').value;
       const newPin = document.getElementById('input-new-pin').value;
-      if (oldPin !== adminPin) { showToast('PIN saat ini tidak cocok!', 'error'); return; }
-      if (!newPin || newPin.length < 4) { showToast('PIN Baru minimal 4 karakter!', 'error'); return; }
+      if (oldPin !== adminPin) { 
+        showToast('PIN saat ini tidak cocok!', 'error'); 
+        return; 
+      }
+      if (!newPin || newPin.length < 4) { 
+        showToast('PIN Baru minimal 4 karakter!', 'error'); 
+        return; 
+      }
       adminPin = newPin;
       localStorage.setItem('erapor_admin_pin', adminPin);
       closeSecurityModal();
       showToast('PIN Admin Berhasil Diperbarui!', 'success');
     }
 
-    // VIEW SWITCHING
     function switchView(view) {
       const studentBtn = document.getElementById('nav-btn-student');
       const adminBtn = document.getElementById('nav-btn-admin');
@@ -685,13 +647,11 @@
           view.classList.add('hidden');
         }
       });
-
       if (tab === 'dashboard') renderAdminDashboard();
       if (tab === 'grades') renderGradeInputArea();
       if (tab === 'master') renderAdminMasterData();
     }
 
-    // DROPDOWNS & PORTAL SISWA
     function populateSelectDropdowns() {
       const yearOpts = appData.academicYears.map(y => `<option value="${y}">${y}</option>`).join('');
       document.getElementById('filter-academic-year').innerHTML = yearOpts;
@@ -724,23 +684,38 @@
         return;
       }
 
-      const sch = appData.schoolIdentity || { name: 'SD NEGERI 03 LIMBANGAN', address: 'Jl. Raya Limbangan No. 45', logoUrl: '' };
+      const sch = appData.schoolIdentity || { name: 'SEKOLAH DIGITAL', address: '', logoUrl: 'logo.png' };
       const student = appData.students.find(s => s.id === studentId);
       const studentGrades = (appData.grades[year] && appData.grades[year][sem] && appData.grades[year][sem][studentId]) ? appData.grades[year][sem][studentId] : {};
       const studentReview = (appData.reviews[year] && appData.reviews[year][sem] && appData.reviews[year][sem][studentId]) ? appData.reviews[year][sem][studentId] : 'Belum ada catatan khusus dari wali kelas.';
 
-      let totalScore = 0, count = 0, subjectRows = '';
+      let totalScore = 0;
+      let count = 0;
+      let subjectRows = '';
 
       appData.subjects.forEach((subj, idx) => {
         const score = studentGrades[subj] !== undefined ? studentGrades[subj] : '-';
-        if (typeof score === 'number') { totalScore += score; count++; }
+        if (typeof score === 'number') { 
+          totalScore += score; 
+          count++; 
+        }
 
-        let predicate = '-', badgeClass = 'bg-slate-100 text-slate-600';
+        let predicate = '-';
+        let badgeClass = 'bg-slate-100 text-slate-600';
         if (typeof score === 'number') {
-          if (score >= 90) { predicate = 'Sangat Baik (A)'; badgeClass = 'bg-emerald-100 text-emerald-800 font-bold'; }
-          else if (score >= 80) { predicate = 'Baik (B)'; badgeClass = 'bg-blue-100 text-blue-800 font-bold'; }
-          else if (score >= 70) { predicate = 'Cukup (C)'; badgeClass = 'bg-amber-100 text-amber-800 font-bold'; }
-          else { predicate = 'Perlu Bimbingan (D)'; badgeClass = 'bg-rose-100 text-rose-800 font-bold'; }
+          if (score >= 90) { 
+            predicate = 'Sangat Baik (A)'; 
+            badgeClass = 'bg-emerald-100 text-emerald-800 font-bold'; 
+          } else if (score >= 80) { 
+            predicate = 'Baik (B)'; 
+            badgeClass = 'bg-blue-100 text-blue-800 font-bold'; 
+          } else if (score >= 70) { 
+            predicate = 'Cukup (C)'; 
+            badgeClass = 'bg-amber-100 text-amber-800 font-bold'; 
+          } else { 
+            predicate = 'Perlu Bimbingan (D)'; 
+            badgeClass = 'bg-rose-100 text-rose-800 font-bold'; 
+          }
         }
 
         subjectRows += `
@@ -758,8 +733,6 @@
 
       container.innerHTML = `
         <div class="bg-white rounded-3xl border border-slate-200/80 shadow-md p-6 sm:p-8 card-print space-y-6">
-          
-          <!-- KOP SEKOLAH & QR CODE RESMI -->
           <div class="flex flex-col sm:flex-row justify-between items-center border-b-2 border-slate-800 pb-5 gap-4">
             <div class="flex items-center space-x-4">
               ${logoTag}
@@ -769,34 +742,27 @@
                 <span class="text-[10px] font-extrabold bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-md mt-1 inline-block border border-indigo-100">DOKUMEN EVALUASI BELAJAR RESMI</span>
               </div>
             </div>
-
-            <!-- Kode QR Verifikasi Keaslian -->
             <div class="flex flex-col items-center justify-center bg-slate-50 p-2 rounded-2xl border border-slate-200">
               <div id="qrcode-box" class="p-1 bg-white rounded-xl shadow-sm"></div>
               <span class="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Verifikasi Resmi</span>
             </div>
           </div>
 
-          <!-- HEADER RAPOR & METRIK SISWA -->
           <div class="flex flex-col sm:flex-row justify-between items-start border-b border-slate-200 pb-4 gap-4">
             <div>
               <span class="text-xs font-extrabold text-indigo-600 uppercase tracking-widest">LAPORAN HASIL BELAJAR</span>
               <h2 class="text-2xl font-black text-slate-900 mt-0.5">${student ? student.name : '-'}</h2>
               <p class="text-xs text-slate-500 font-medium">NIS: ${student ? student.id : '-'} | Kelas: ${student ? student.class : '-'} | Semester ${sem} (${year})</p>
             </div>
-            
             <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 flex items-center gap-4 self-stretch sm:self-auto">
               <div class="text-right flex-1 sm:flex-none">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Rata-Rata Nilai</span>
                 <span class="text-3xl font-black text-indigo-600">${averageScore}</span>
               </div>
-              <div class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-xl font-bold">
-                <i class="fa-solid fa-award"></i>
-              </div>
+              <div class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-award"></i></div>
             </div>
           </div>
 
-          <!-- GRID: TABLE & RADAR CHART -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 overflow-x-auto">
               <table class="w-full text-left text-xs border-collapse">
@@ -811,14 +777,12 @@
                 <tbody class="divide-y divide-slate-100">${subjectRows}</tbody>
               </table>
             </div>
-
             <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/60 flex flex-col justify-center">
               <h4 class="text-xs font-bold text-slate-700 mb-2 text-center uppercase tracking-wider">Pemetaan Kemampuan</h4>
               <div class="h-56"><canvas id="student-radar-chart"></canvas></div>
             </div>
           </div>
 
-          <!-- BOX REVIEW / CATATAN WALI KELAS -->
           <div class="p-5 rounded-2xl bg-indigo-50/60 border border-indigo-100 space-y-2">
             <h4 class="text-xs font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-2">
               <i class="fa-solid fa-comment-dots text-indigo-600"></i> Review & Catatan Perkembangan Siswa
@@ -826,7 +790,7 @@
             <p class="text-sm text-slate-700 italic leading-relaxed">"${studentReview}"</p>
           </div>
 
-          <!-- FOOTER TANDA TANGAN CETAK -->
+          <!-- Footer Tanda Tangan Cetak -->
           <div class="pt-8 border-t border-slate-200 hidden print-only">
             <div class="flex justify-between text-center text-xs font-semibold">
               <div>
@@ -841,11 +805,9 @@
               </div>
             </div>
           </div>
-
         </div>
       `;
 
-      // Generate QR Code & Radar Chart
       setTimeout(() => {
         renderStudentRadarChart(studentGrades);
         generateVerificationQRCode(student, year, sem, averageScore);
@@ -856,9 +818,7 @@
       const qrContainer = document.getElementById('qrcode-box');
       if (!qrContainer) return;
       qrContainer.innerHTML = '';
-
       const verificationText = `VERIFIKASI RESMI ERAPOR\nSekolah: ${appData.schoolIdentity ? appData.schoolIdentity.name : 'SEKOLAH'}\nNIS: ${student.id}\nNama: ${student.name}\nTA: ${year} Sem ${sem}\nRata-Rata: ${avg}`;
-
       new QRCode(qrContainer, {
         text: verificationText,
         width: 64,
@@ -873,7 +833,6 @@
       const ctx = document.getElementById('student-radar-chart');
       if (!ctx) return;
       if (radarChartInstance) radarChartInstance.destroy();
-
       radarChartInstance = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -894,25 +853,31 @@
       });
     }
 
-    // DASHBOARD ANALYTICS
     function renderAdminDashboard() {
       document.getElementById('stat-total-students').innerText = appData.students.length;
       document.getElementById('stat-total-classes').innerText = appData.classes.length;
 
-      let total = 0, count = 0, needAttention = 0;
+      let total = 0;
+      let count = 0;
+      let needAttention = 0;
       const currentYear = appData.academicYears[appData.academicYears.length - 1] || '2025/2026';
       const yearGrades = (appData.grades[currentYear] && appData.grades[currentYear]['1']) ? appData.grades[currentYear]['1'] : {};
       const studentAvgs = [];
 
       appData.students.forEach(s => {
         const grades = yearGrades[s.id] || {};
-        let sTotal = 0, sCount = 0;
+        let sTotal = 0;
+        let sCount = 0;
         appData.subjects.forEach(sub => {
-          if (typeof grades[sub] === 'number') { sTotal += grades[sub]; sCount++; }
+          if (typeof grades[sub] === 'number') { 
+            sTotal += grades[sub]; 
+            sCount++; 
+          }
         });
         if (sCount > 0) {
           const avg = sTotal / sCount;
-          total += avg; count++;
+          total += avg; 
+          count++;
           studentAvgs.push({ student: s, avg });
           if (avg < 75) needAttention++;
         }
@@ -951,11 +916,15 @@
       const classData = appData.classes.map(cls => {
         const students = appData.students.filter(s => s.class === cls);
         if (students.length === 0) return 0;
-        let tScore = 0, count = 0;
+        let tScore = 0;
+        let count = 0;
         students.forEach(s => {
           const g = yearGrades[s.id] || {};
           appData.subjects.forEach(sub => {
-            if (typeof g[sub] === 'number') { tScore += g[sub]; count++; }
+            if (typeof g[sub] === 'number') { 
+              tScore += g[sub]; 
+              count++; 
+            }
           });
         });
         return count > 0 ? (tScore / count).toFixed(1) : 0;
@@ -965,13 +934,21 @@
         type: 'bar',
         data: {
           labels: appData.classes,
-          datasets: [{ label: 'Rata-Rata Nilai', data: classData, backgroundColor: 'rgba(79, 70, 229, 0.85)', borderRadius: 8 }]
+          datasets: [{ 
+            label: 'Rata-Rata Nilai', 
+            data: classData, 
+            backgroundColor: 'rgba(79, 70, 229, 0.85)', 
+            borderRadius: 8 
+          }]
         },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
+        options: { 
+          responsive: true, 
+          maintainAspectRatio: false, 
+          scales: { y: { min: 0, max: 100 } } 
+        }
       });
     }
 
-    // INPUT NILAI: SINGLE & BULK EXCEL COPY PASTE
     function setGradeInputMode(mode) {
       gradeInputMode = mode;
       const btnSingle = document.getElementById('btn-mode-single');
@@ -999,8 +976,11 @@
     }
 
     function renderGradeInputArea() {
-      if (gradeInputMode === 'single') renderSingleGradeForm();
-      else renderBulkExcelPasteArea();
+      if (gradeInputMode === 'single') {
+        renderSingleGradeForm();
+      } else {
+        renderBulkExcelPasteArea();
+      }
     }
 
     function renderSingleGradeForm() {
@@ -1083,17 +1063,14 @@
               <i class="fa-solid fa-copy"></i> Copy Format Header Excel
             </button>
           </div>
-
           <div class="p-3.5 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs text-indigo-950 space-y-1 font-mono">
-            <p class="font-bold">Urutan Kolom Excel yang Diterima:</p>
+            <p class="font-bold">Urutan Kolom Excel:</p>
             <p class="text-indigo-800">NIS | ${subjectHeaders} | Review / Catatan</p>
           </div>
-
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tempelkan Data Excel Di Sini (Ctrl + V)</label>
-            <textarea id="bulk-excel-input" rows="8" placeholder="Contoh Paste dari Excel:&#10;1001&#9;85&#9;90&#9;88&#9;80&#9;85&#9;87&#9;Sangat baik dan tekun&#10;1002&#9;90&#9;95&#9;92&#9;88&#9;90&#9;91&#9;Siswa berprestasi unggul" class="w-full bg-slate-900 text-emerald-400 font-mono text-xs p-4 rounded-2xl focus:ring-2 focus:ring-emerald-400 focus:outline-none"></textarea>
+            <textarea id="bulk-excel-input" rows="8" placeholder="Contoh Paste dari Excel..." class="w-full bg-slate-900 text-emerald-400 font-mono text-xs p-4 rounded-2xl focus:ring-2 focus:ring-emerald-400 focus:outline-none"></textarea>
           </div>
-
           <button onclick="processBulkExcelGrades()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2">
             <i class="fa-solid fa-file-import"></i> Proses & Simpan Nilai Massal
           </button>
@@ -1104,7 +1081,7 @@
     function copyExcelHeaderTemplate() {
       const headers = ['NIS', ...appData.subjects, 'Review_Khusus'].join('\t');
       navigator.clipboard.writeText(headers);
-      showToast('Header Excel Disalin! Tempelkan di baris paling atas Excel Anda.', 'success');
+      showToast('Header Excel Disalin!', 'success');
     }
 
     function processBulkExcelGrades() {
@@ -1112,7 +1089,10 @@
       const sem = document.getElementById('admin-input-semester').value;
       const rawText = document.getElementById('bulk-excel-input').value.trim();
 
-      if (!rawText) { showToast('Kotak input Excel masih kosong!', 'error'); return; }
+      if (!rawText) { 
+        showToast('Kotak input Excel masih kosong!', 'error'); 
+        return; 
+      }
 
       const lines = rawText.split('\n');
       let successCount = 0;
@@ -1148,70 +1128,80 @@
         showToast(`Berhasil Memproses ${successCount} Data Nilai Siswa!`, 'success');
         document.getElementById('bulk-excel-input').value = '';
       } else {
-        showToast('Gagal memproses. Pastikan NIS sesuai dengan data siswa.', 'error');
+        showToast('Gagal memproses. Pastikan NIS sesuai.', 'error');
       }
     }
 
-    // MASTER DATA MANAGEMENT (DYNAMIC YEARS, CLASSES, SUBJECTS, & STUDENTS)
     function renderAdminMasterData() {
       initSchoolIdentityInputs();
 
-      // Dynamic Academic Years
       document.getElementById('master-year-list').innerHTML = appData.academicYears.map(y => `
         <li class="py-2 flex items-center justify-between">
           <span class="font-semibold text-slate-700 font-mono">${y}</span>
           <div class="flex items-center space-x-2">
-            <button onclick="editAcademicYear('${y}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button onclick="removeAcademicYear('${y}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="editAcademicYear('${y}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="removeAcademicYear('${y}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold">
+              <i class="fa-solid fa-trash"></i>
+            </button>
           </div>
         </li>
       `).join('');
 
-      // Classes
       document.getElementById('master-class-list').innerHTML = appData.classes.map(c => `
         <li class="py-2 flex items-center justify-between">
           <span class="font-semibold text-slate-700">${c}</span>
           <div class="flex items-center space-x-2">
-            <button onclick="editClass('${c}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button onclick="removeClass('${c}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="editClass('${c}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="removeClass('${c}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold">
+              <i class="fa-solid fa-trash"></i>
+            </button>
           </div>
         </li>
       `).join('');
 
-      // Subjects
       document.getElementById('master-subject-list').innerHTML = appData.subjects.map(s => `
         <li class="py-2 flex items-center justify-between">
           <span class="font-semibold text-slate-700">${s}</span>
           <div class="flex items-center space-x-2">
-            <button onclick="editSubject('${s}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button onclick="removeSubject('${s}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="editSubject('${s}')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="removeSubject('${s}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold">
+              <i class="fa-solid fa-trash"></i>
+            </button>
           </div>
         </li>
       `).join('');
 
-      // Students
       document.getElementById('master-student-tbody').innerHTML = appData.students.map(s => `
         <tr class="hover:bg-slate-50">
           <td class="p-3 font-mono font-bold text-slate-600">${s.id}</td>
           <td class="p-3 font-bold text-slate-800">${s.name}</td>
           <td class="p-3"><span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded-md">${s.class}</span></td>
           <td class="p-3 text-center space-x-2">
-            <button onclick="editStudent('${s.id}')" class="text-indigo-600 hover:text-indigo-800 font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button onclick="removeStudent('${s.id}')" class="text-rose-500 hover:text-rose-700 font-bold"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="editStudent('${s.id}')" class="text-indigo-600 hover:text-indigo-800 font-bold">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="removeStudent('${s.id}')" class="text-rose-500 hover:text-rose-700 font-bold">
+              <i class="fa-solid fa-trash"></i>
+            </button>
           </td>
         </tr>
       `).join('');
     }
 
-    // Dynamic Academic Year Functions
     function promptAddAcademicYear() {
-      const yearStr = prompt('Masukkan Tahun Ajaran Baru (misal: 2028/2029):');
+      const yearStr = prompt('Masukkan Tahun Ajaran Baru (misal: 2029/2030):');
       if (yearStr && !appData.academicYears.includes(yearStr)) {
         appData.academicYears.push(yearStr);
         saveLocalStorageData();
         populateSelectDropdowns();
         renderAdminMasterData();
-        showToast('Tahun Ajaran Baru Ditambahkan!', 'success');
+        showToast('Tahun Ajaran Ditambahkan!', 'success');
       }
     }
 
@@ -1237,7 +1227,6 @@
       }
     }
 
-    // Class Functions
     function promptAddClass() {
       const name = prompt('Masukkan Nama Kelas Baru (misal: XII-IPA-1):');
       if (name && !appData.classes.includes(name)) {
@@ -1254,11 +1243,13 @@
       if (newClass && newClass !== oldClass) {
         const idx = appData.classes.indexOf(oldClass);
         if (idx !== -1) appData.classes[idx] = newClass;
-        appData.students.forEach(s => { if (s.class === oldClass) s.class = newClass; });
+        appData.students.forEach(s => { 
+          if (s.class === oldClass) s.class = newClass; 
+        });
         saveLocalStorageData();
         populateSelectDropdowns();
         renderAdminMasterData();
-        showToast('Nama Kelas Diperbarui!', 'success');
+        showToast('Kelas Diperbarui!', 'success');
       }
     }
 
@@ -1272,7 +1263,6 @@
       }
     }
 
-    // Subject Functions
     function promptAddSubject() {
       const name = prompt('Masukkan Nama Mata Pelajaran Baru:');
       if (name && !appData.subjects.includes(name)) {
@@ -1303,7 +1293,6 @@
       }
     }
 
-    // Student Functions
     function promptAddStudent() {
       const id = prompt('Masukkan NIS/NISN Siswa:');
       if (!id) return;
@@ -1334,7 +1323,6 @@
         student.id = newId;
         student.name = newName;
         student.class = newClass;
-
         saveLocalStorageData();
         populateSelectDropdowns();
         renderAdminMasterData();
@@ -1352,7 +1340,6 @@
       }
     }
 
-    // CSV EXPORT & IMPORT FOR STUDENTS
     function downloadStudentCsvTemplate() {
       const csvContent = "data:text/csv;charset=utf-8,NIS,Nama,Kelas\n1004,Dewi Sartika,X-IPA-1\n1005,Eko Prasetyo,X-IPA-2";
       const encodedUri = encodeURI(csvContent);
@@ -1366,8 +1353,8 @@
 
     function exportStudentsToCsv() {
       let csvStr = "NIS,Nama,Kelas\n";
-      appData.students.forEach(s => {
-        csvStr += `"${s.id}","${s.name}","${s.class}"\n`;
+      appData.students.forEach(s => { 
+        csvStr += `"${s.id}","${s.name}","${s.class}"\n`; 
       });
       const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvStr);
       const link = document.createElement("a");
@@ -1381,13 +1368,11 @@
     function importStudentsCsv(event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(e) {
         const text = e.target.result;
         const lines = text.split('\n');
         let importedCount = 0;
-
         lines.forEach((line, i) => {
           if (i === 0 || !line.trim()) return;
           const cols = line.split(',').map(c => c.replace(/"/g, '').trim());
@@ -1395,17 +1380,13 @@
             const [id, name, cls] = cols;
             if (id && name && cls) {
               const existingIdx = appData.students.findIndex(s => s.id === id);
-              if (existingIdx !== -1) {
-                appData.students[existingIdx] = { id, name, class: cls };
-              } else {
-                appData.students.push({ id, name, class: cls });
-              }
+              if (existingIdx !== -1) appData.students[existingIdx] = { id, name, class: cls };
+              else appData.students.push({ id, name, class: cls });
               if (!appData.classes.includes(cls)) appData.classes.push(cls);
               importedCount++;
             }
           }
         });
-
         saveLocalStorageData();
         populateSelectDropdowns();
         renderAdminMasterData();
@@ -1414,7 +1395,6 @@
       reader.readAsText(file);
     }
 
-    // FIREBASE ENGINE
     function initFirebaseFromStorage() {
       const savedConfig = localStorage.getItem('erapor_firebase_config');
       if (savedConfig) {
@@ -1434,7 +1414,6 @@
             }
           });
         } catch (err) {
-          console.error(err);
           updateFirebaseStatusUI(false);
         }
       } else {
@@ -1445,7 +1424,6 @@
     function updateFirebaseStatusUI(connected) {
       const badgeDot = document.getElementById('fb-status-dot');
       const badgeText = document.getElementById('fb-status-text');
-
       if (connected) {
         badgeDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
         badgeText.innerText = "Firebase Active";
@@ -1455,73 +1433,65 @@
       }
     }
 
-    function openConfigModal() {
-      const savedConfig = localStorage.getItem('erapor_firebase_config');
-      if (savedConfig) {
-        try {
-          const cfg = JSON.parse(savedConfig);
-          document.getElementById('raw-firebase-code').value = `const firebaseConfig = ${JSON.stringify(cfg, null, 2)};`;
-        } catch (e) {}
-      }
-      document.getElementById('modal-firebase-config').classList.remove('hidden');
+    function openConfigModal() { 
+      document.getElementById('modal-firebase-config').classList.remove('hidden'); 
     }
 
-    function closeConfigModal() {
-      document.getElementById('modal-firebase-config').classList.add('hidden');
+    function closeConfigModal() { 
+      document.getElementById('modal-firebase-config').classList.add('hidden'); 
     }
 
     function saveFirebaseConfigFromCode() {
       const rawText = document.getElementById('raw-firebase-code').value;
-      if (!rawText.trim()) { showToast('Silakan tempelkan kode firebaseConfig!', 'error'); return; }
-
+      if (!rawText.trim()) { 
+        showToast('Silakan tempelkan kode!', 'error'); 
+        return; 
+      }
       try {
         let extractedConfig = null;
-        try {
-          extractedConfig = JSON.parse(rawText);
+        try { 
+          extractedConfig = JSON.parse(rawText); 
         } catch (e) {
           const match = rawText.match(/\{[\s\S]*\}/);
           if (match) {
-            let jsonLikeStr = match[0]
-              .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":')
-              .replace(/'/g, '"')
-              .replace(/,\s*}/g, '}');
+            let jsonLikeStr = match[0].replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":').replace(/'/g, '"').replace(/,\s*}/g, '}');
             extractedConfig = JSON.parse(jsonLikeStr);
           }
         }
-
         if (extractedConfig && extractedConfig.apiKey && extractedConfig.projectId) {
           localStorage.setItem('erapor_firebase_config', JSON.stringify(extractedConfig));
           closeConfigModal();
           showToast('Menyambungkan ke Firebase...', 'info');
           setTimeout(() => window.location.reload(), 1000);
         } else {
-          showToast('Format kode tidak valid. Pastikan menyertakan apiKey & projectId.', 'error');
+          showToast('Format kode tidak valid.', 'error');
         }
       } catch (err) {
-        showToast('Gagal membaca kode Firebase Config.', 'error');
+        showToast('Gagal membaca konfigurasi.', 'error');
       }
     }
 
     function resetFirebaseConfig() {
-      if (confirm('Hapus konfigurasi Firebase dan kembali ke Mode LocalStorage?')) {
+      if (confirm('Hapus konfigurasi Firebase?')) {
         localStorage.removeItem('erapor_firebase_config');
         closeConfigModal();
-        showToast('Konfigurasi Firebase Dihapus', 'info');
+        showToast('Firebase Dihapus', 'info');
         setTimeout(() => window.location.reload(), 800);
       }
     }
 
-    // TOAST NOTIFICATION UTILITY
     function showToast(msg, type = 'info') {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toast-msg');
       const toastIcon = document.getElementById('toast-icon');
-
       toastMsg.innerText = msg;
-      if (type === 'success') toastIcon.className = 'fa-solid fa-circle-check text-emerald-400';
-      else if (type === 'error') toastIcon.className = 'fa-solid fa-circle-xmark text-rose-400';
-      else toastIcon.className = 'fa-solid fa-circle-info text-sky-400';
-
+      if (type === 'success') {
+        toastIcon.className = 'fa-solid fa-circle-check text-emerald-400';
+      } else if (type === 'error') {
+        toastIcon.className = 'fa-solid fa-circle-xmark text-rose-400';
+      } else {
+        toastIcon.className = 'fa-solid fa-circle-info text-sky-400';
+      }
       toast.classList.remove('translate-y-20', 'opacity-0');
       setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
     }
