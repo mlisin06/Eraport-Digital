@@ -55,6 +55,11 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
+  <!-- DEMO BANNER NOTIFICATION (Otomatis muncul jika ?demo=true) -->
+  <div id="demoBanner" class="hidden bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 border-b border-amber-300 px-4 py-2.5 text-center text-xs font-extrabold text-slate-950 shadow-md z-50 no-print">
+    <i class="fa-solid fa-flask mr-2 text-base"></i> MODE DEMO PRATINJAU BLOG: Ini adalah simulasi interaktif. Perubahan data tidak akan mempengaruhi database atau catatan asli sekolah.
+  </div>
+
   <!-- NAVBAR UTAMA -->
   <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -467,6 +472,46 @@
     let firebaseDb = null;
     let isFirebaseConnected = false;
 
+    // ==========================================
+    // PENDETEKSI MODE DEMO (?demo=true)
+    // ==========================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDemoMode = urlParams.get('demo') === 'true' || urlParams.get('demo') === '1' || urlParams.get('mode') === 'demo';
+    window.isDemoMode = isDemoMode;
+
+    // Data Dummy khusus Mode Demo
+    const dummyAppData = {
+      schoolIdentity: {
+        name: 'SD NEGERI 03 LIMBANGAN (DEMO)',
+        address: 'Jl. Raya Limbangan No. 45, Kendal',
+        logoUrl: 'logo.jpg'
+      },
+      classes: ['X-IPA-1', 'X-IPA-2', 'XI-IPA-1'],
+      subjects: ['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'Fisika', 'Kimia', 'Biologi'],
+      academicYears: ['2025/2026', '2026/2027'],
+      students: [
+        { id: '1001', name: 'Ahmad Fauzi (Demo)', class: 'X-IPA-1' },
+        { id: '1002', name: 'Bunga Citra (Demo)', class: 'X-IPA-1' },
+        { id: '1003', name: 'Budi Santoso (Demo)', class: 'X-IPA-2' }
+      ],
+      grades: {
+        '2025/2026': {
+          '1': {
+            '1001': { 'Matematika': 88, 'Bahasa Indonesia': 90, 'Bahasa Inggris': 85, 'Fisika': 82, 'Kimia': 80, 'Biologi': 87 },
+            '1002': { 'Matematika': 95, 'Bahasa Indonesia': 92, 'Bahasa Inggris': 94, 'Fisika': 89, 'Kimia': 91, 'Biologi': 93 }
+          }
+        }
+      },
+      reviews: {
+        '2025/2026': {
+          '1': {
+            '1001': 'Ahmad menunjukkan ketekunan yang sangat baik dalam memahami materi sains.',
+            '1002': 'Bunga sangat proaktif dan berprestasi unggul di semua bidang studi.'
+          }
+        }
+      }
+    };
+
     let appData = {
       schoolIdentity: {
         name: 'SD NEGERI 03 LIMBANGAN',
@@ -503,8 +548,24 @@
     let radarChartInstance = null;
 
     window.addEventListener('DOMContentLoaded', () => {
-      loadLocalStorageData();
-      initFirebaseFromStorage();
+      if (isDemoMode) {
+        // Tampilkan Banner Demo
+        const banner = document.getElementById('demoBanner');
+        if (banner) banner.classList.remove('hidden');
+
+        // Gunakan data dummy agar langsung tampil interaktif
+        appData = JSON.parse(JSON.stringify(dummyAppData));
+
+        // Ubah badge status jadi mode demo simulasi
+        const badgeDot = document.getElementById('fb-status-dot');
+        const badgeText = document.getElementById('fb-status-text');
+        if (badgeDot) badgeDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
+        if (badgeText) badgeText.innerText = "Mode Demo Aktif";
+      } else {
+        loadLocalStorageData();
+        initFirebaseFromStorage();
+      }
+
       populateSelectDropdowns();
       renderStudentPortal();
       renderAdminDashboard();
@@ -512,6 +573,7 @@
     });
 
     function loadLocalStorageData() {
+      if (isDemoMode) return;
       const saved = localStorage.getItem('erapor_local_data');
       if (saved) {
         try { 
@@ -524,6 +586,10 @@
     }
 
     function saveLocalStorageData() {
+      if (isDemoMode) {
+        showToast('Mode Demo: Perubahan disimpan sementara di memori.', 'info');
+        return;
+      }
       localStorage.setItem('erapor_local_data', JSON.stringify(appData));
       if (isFirebaseConnected && firebaseDb) {
         firebaseDb.ref('erapor_data').set(appData);
@@ -532,12 +598,16 @@
 
     function initSchoolIdentityInputs() {
       const sch = appData.schoolIdentity || {};
-      document.getElementById('school-name-input').value = sch.name || '';
-      document.getElementById('school-address-input').value = sch.address || '';
-      document.getElementById('school-logo-input').value = sch.logoUrl || 'logo.jpg';
+      const nameInput = document.getElementById('school-name-input');
+      const addressInput = document.getElementById('school-address-input');
+      const logoInput = document.getElementById('school-logo-input');
+      if (nameInput) nameInput.value = sch.name || '';
+      if (addressInput) addressInput.value = sch.address || '';
+      if (logoInput) logoInput.value = sch.logoUrl || 'logo.jpg';
     }
 
     function saveSchoolIdentity() {
+      if (isDemoMode) { showToast('Mode Demo: Pengaturan dikunci.', 'error'); return; }
       appData.schoolIdentity = {
         name: document.getElementById('school-name-input').value || 'SEKOLAH DIGITAL',
         address: document.getElementById('school-address-input').value || '',
@@ -549,6 +619,15 @@
     }
 
     function checkAdminAccess(target) {
+      if (isDemoMode) {
+        // Di mode demo, langsung izinkan buka admin tanpa PIN agar pengunjung blog bisa mengeksplorasi
+        isAdminUnlocked = true;
+        if (target === 'admin') switchView('admin');
+        if (target === 'config') openConfigModal();
+        showToast('Akses Admin Demo Terbuka!', 'success');
+        return;
+      }
+
       if (isAdminUnlocked) {
         if (target === 'admin') switchView('admin');
         if (target === 'config') openConfigModal();
@@ -589,6 +668,7 @@
     }
 
     function openSecurityModal() { 
+      if (isDemoMode) { showToast('Mode Demo: Ubah PIN dinonaktifkan.', 'error'); return; }
       document.getElementById('modal-change-pin').classList.remove('hidden'); 
     }
 
@@ -1023,6 +1103,7 @@
     }
 
     function saveStudentGrades() {
+      if (isDemoMode) { showToast('Mode Demo: Perubahan tidak disimpan permanen.', 'info'); return; }
       const year = document.getElementById('admin-input-year').value;
       const sem = document.getElementById('admin-input-semester').value;
       const studentId = document.getElementById('admin-input-student').value;
@@ -1085,6 +1166,7 @@
     }
 
     function processBulkExcelGrades() {
+      if (isDemoMode) { showToast('Mode Demo: Input massal dinonaktifkan.', 'error'); return; }
       const year = document.getElementById('admin-input-year').value;
       const sem = document.getElementById('admin-input-semester').value;
       const rawText = document.getElementById('bulk-excel-input').value.trim();
@@ -1195,6 +1277,7 @@
     }
 
     function promptAddAcademicYear() {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const yearStr = prompt('Masukkan Tahun Ajaran Baru (misal: 2029/2030):');
       if (yearStr && !appData.academicYears.includes(yearStr)) {
         appData.academicYears.push(yearStr);
@@ -1206,6 +1289,7 @@
     }
 
     function editAcademicYear(oldYear) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const newYear = prompt('Ubah Format Tahun Ajaran:', oldYear);
       if (newYear && newYear !== oldYear) {
         const idx = appData.academicYears.indexOf(oldYear);
@@ -1218,6 +1302,7 @@
     }
 
     function removeAcademicYear(yearStr) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       if (confirm(`Hapus Tahun Ajaran ${yearStr}?`)) {
         appData.academicYears = appData.academicYears.filter(y => y !== yearStr);
         saveLocalStorageData();
@@ -1228,6 +1313,7 @@
     }
 
     function promptAddClass() {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const name = prompt('Masukkan Nama Kelas Baru (misal: XII-IPA-1):');
       if (name && !appData.classes.includes(name)) {
         appData.classes.push(name);
@@ -1239,6 +1325,7 @@
     }
 
     function editClass(oldClass) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const newClass = prompt('Ubah Nama Kelas:', oldClass);
       if (newClass && newClass !== oldClass) {
         const idx = appData.classes.indexOf(oldClass);
@@ -1254,6 +1341,7 @@
     }
 
     function removeClass(cls) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       if (confirm(`Hapus kelas ${cls}?`)) {
         appData.classes = appData.classes.filter(c => c !== cls);
         saveLocalStorageData();
@@ -1264,6 +1352,7 @@
     }
 
     function promptAddSubject() {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const name = prompt('Masukkan Nama Mata Pelajaran Baru:');
       if (name && !appData.subjects.includes(name)) {
         appData.subjects.push(name);
@@ -1274,6 +1363,7 @@
     }
 
     function editSubject(oldSubject) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const newSubject = prompt('Ubah Nama Mata Pelajaran:', oldSubject);
       if (newSubject && newSubject !== oldSubject) {
         const idx = appData.subjects.indexOf(oldSubject);
@@ -1285,6 +1375,7 @@
     }
 
     function removeSubject(subj) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       if (confirm(`Hapus mata pelajaran ${subj}?`)) {
         appData.subjects = appData.subjects.filter(s => s !== subj);
         saveLocalStorageData();
@@ -1294,6 +1385,7 @@
     }
 
     function promptAddStudent() {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const id = prompt('Masukkan NIS/NISN Siswa:');
       if (!id) return;
       const name = prompt('Masukkan Nama Lengkap Siswa:');
@@ -1310,6 +1402,7 @@
     }
 
     function editStudent(studentId) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       const student = appData.students.find(s => s.id === studentId);
       if (!student) return;
 
@@ -1331,6 +1424,7 @@
     }
 
     function removeStudent(id) {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       if (confirm(`Hapus siswa dengan NIS ${id}?`)) {
         appData.students = appData.students.filter(s => s.id !== id);
         saveLocalStorageData();
@@ -1366,6 +1460,7 @@
     }
 
     function importStudentsCsv(event) {
+      if (isDemoMode) { showToast('Mode Demo: Impor CSV dikunci.', 'error'); event.target.value = ''; return; }
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -1396,6 +1491,7 @@
     }
 
     function initFirebaseFromStorage() {
+      if (isDemoMode) return;
       const savedConfig = localStorage.getItem('erapor_firebase_config');
       if (savedConfig) {
         try {
@@ -1434,6 +1530,7 @@
     }
 
     function openConfigModal() { 
+      if (isDemoMode) { showToast('Mode Demo: Pengaturan Firebase dikunci.', 'error'); return; }
       document.getElementById('modal-firebase-config').classList.remove('hidden'); 
     }
 
@@ -1442,6 +1539,7 @@
     }
 
     function saveFirebaseConfigFromCode() {
+      if (isDemoMode) { showToast('Mode Demo: Pengaturan dikunci.', 'error'); return; }
       const rawText = document.getElementById('raw-firebase-code').value;
       if (!rawText.trim()) { 
         showToast('Silakan tempelkan kode!', 'error'); 
@@ -1472,6 +1570,7 @@
     }
 
     function resetFirebaseConfig() {
+      if (isDemoMode) { showToast('Mode Demo: Fitur dikunci.', 'error'); return; }
       if (confirm('Hapus konfigurasi Firebase?')) {
         localStorage.removeItem('erapor_firebase_config');
         closeConfigModal();
