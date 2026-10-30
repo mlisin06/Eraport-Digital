@@ -619,7 +619,7 @@
         firebaseDb.ref('erapor_data').set(appData);
       }
 
-      // Perbarui tampilan secara instan sesuai posisi halaman aktif (tanpa refresh/mental)
+      // Perbarui tampilan secara instan sesuai posisi halaman aktif
       populateSelectDropdowns();
       if (currentView === 'admin') {
         if (currentAdminTab === 'master') renderAdminMasterData();
@@ -648,6 +648,7 @@
         logoUrl: document.getElementById('school-logo-input').value || 'logo.jpg'
       };
       saveLocalStorageData();
+      renderStudentPortal();
       showToast('Identitas Kop Sekolah Berhasil Disimpan!', 'success');
     }
 
@@ -1521,6 +1522,7 @@
               if (currentView === 'admin') {
                 if (currentAdminTab === 'master') renderAdminMasterData();
                 else if (currentAdminTab === 'dashboard') renderAdminDashboard();
+                else if (currentAdminTab === 'grades') renderGradeInputArea();
               } else {
                 renderStudentPortal();
               }
