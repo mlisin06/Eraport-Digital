@@ -27,7 +27,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-  <style>
+ <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     
     body {
@@ -44,11 +44,22 @@
       body { 
         background-color: white !important; 
         color: black !important; 
+        font-size: 11px !important; /* Memperkecil ukuran font agar muat 1 halaman */
       }
       .card-print { 
         border: none !important; 
         box-shadow: none !important; 
         padding: 0 !important; 
+        margin: 0 !important;
+      }
+      /* Merapatkan jarak antar elemen di dalam rapor */
+      .card-print > div {
+        margin-bottom: 6px !important;
+        padding: 4px 8px !important;
+      }
+      /* Merapatkan baris tabel nilai */
+      table td, table th {
+        padding: 4px 6px !important;
       }
     }
   </style>
