@@ -44,7 +44,7 @@
       body { 
         background-color: white !important; 
         color: black !important; 
-        font-size: 11px !important; /* Memperkecil ukuran font agar muat 1 halaman */
+        font-size: 10px !important; /* Font lebih padat agar muat 1 halaman */
       }
       .card-print { 
         border: none !important; 
@@ -52,14 +52,23 @@
         padding: 0 !important; 
         margin: 0 !important;
       }
-      /* Merapatkan jarak antar elemen di dalam rapor */
+      /* Merapatkan semua kotak/div di dalam rapor */
       .card-print > div {
-        margin-bottom: 6px !important;
-        padding: 4px 8px !important;
+        margin-bottom: 4px !important;
+        padding: 4px !important;
       }
-      /* Merapatkan baris tabel nilai */
+      /* Memperkecil tinggi grafik radar chart agar tidak terlalu makan tempat */
+      .card-print canvas {
+        max-height: 140px !important;
+      }
+      /* Merapatkan tabel nilai */
       table td, table th {
-        padding: 4px 6px !important;
+        padding: 3px 5px !important;
+      }
+      /* Memastikan area tanda tangan di bawah langsung naik pas di halaman 1 */
+      .print-only {
+        margin-top: 10px !important;
+        padding-top: 5px !important;
       }
     }
   </style>
@@ -483,6 +492,10 @@
     let firebaseDb = null;
     let isFirebaseConnected = false;
 
+    // Pelacak Posisi Navigasi agar tidak mental saat update data
+    let currentView = 'student';
+    let currentAdminTab = 'dashboard';
+
     // ==========================================
     // PENDETEKSI MODE DEMO (?demo=true)
     // ==========================================
@@ -605,6 +618,16 @@
       if (isFirebaseConnected && firebaseDb) {
         firebaseDb.ref('erapor_data').set(appData);
       }
+
+      // Perbarui tampilan secara instan sesuai posisi halaman aktif (tanpa refresh/mental)
+      populateSelectDropdowns();
+      if (currentView === 'admin') {
+        if (currentAdminTab === 'master') renderAdminMasterData();
+        else if (currentAdminTab === 'dashboard') renderAdminDashboard();
+        else if (currentAdminTab === 'grades') renderGradeInputArea();
+      } else {
+        renderStudentPortal();
+      }
     }
 
     function initSchoolIdentityInputs() {
@@ -625,7 +648,6 @@
         logoUrl: document.getElementById('school-logo-input').value || 'logo.jpg'
       };
       saveLocalStorageData();
-      renderStudentPortal();
       showToast('Identitas Kop Sekolah Berhasil Disimpan!', 'success');
     }
 
@@ -705,6 +727,7 @@
     }
 
     function switchView(view) {
+      currentView = view; // Simpan posisi view aktif
       const studentBtn = document.getElementById('nav-btn-student');
       const adminBtn = document.getElementById('nav-btn-admin');
       const studentView = document.getElementById('student-view');
@@ -721,11 +744,12 @@
         adminView.classList.remove('hidden');
         adminBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 bg-indigo-600 text-white shadow-sm";
         studentBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 text-indigo-200 hover:text-white";
-        renderAdminDashboard();
+        switchAdminTab(currentAdminTab); // Tetap di tab admin terakhir
       }
     }
 
     function switchAdminTab(tab) {
+      currentAdminTab = tab; // Simpan posisi tab admin aktif
       const tabs = ['dashboard', 'grades', 'master'];
       tabs.forEach(t => {
         const btn = document.getElementById(`admin-tab-btn-${t}`);
@@ -1293,8 +1317,6 @@
       if (yearStr && !appData.academicYears.includes(yearStr)) {
         appData.academicYears.push(yearStr);
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Tahun Ajaran Ditambahkan!', 'success');
       }
     }
@@ -1306,8 +1328,6 @@
         const idx = appData.academicYears.indexOf(oldYear);
         if (idx !== -1) appData.academicYears[idx] = newYear;
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Tahun Ajaran Diperbarui!', 'success');
       }
     }
@@ -1317,8 +1337,6 @@
       if (confirm(`Hapus Tahun Ajaran ${yearStr}?`)) {
         appData.academicYears = appData.academicYears.filter(y => y !== yearStr);
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Tahun Ajaran Dihapus', 'info');
       }
     }
@@ -1329,8 +1347,6 @@
       if (name && !appData.classes.includes(name)) {
         appData.classes.push(name);
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Kelas Ditambahkan', 'success');
       }
     }
@@ -1345,8 +1361,6 @@
           if (s.class === oldClass) s.class = newClass; 
         });
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Kelas Diperbarui!', 'success');
       }
     }
@@ -1356,8 +1370,6 @@
       if (confirm(`Hapus kelas ${cls}?`)) {
         appData.classes = appData.classes.filter(c => c !== cls);
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Kelas Dihapus', 'info');
       }
     }
@@ -1368,7 +1380,6 @@
       if (name && !appData.subjects.includes(name)) {
         appData.subjects.push(name);
         saveLocalStorageData();
-        renderAdminMasterData();
         showToast('Mata Pelajaran Ditambahkan', 'success');
       }
     }
@@ -1380,7 +1391,6 @@
         const idx = appData.subjects.indexOf(oldSubject);
         if (idx !== -1) appData.subjects[idx] = newSubject;
         saveLocalStorageData();
-        renderAdminMasterData();
         showToast('Mata Pelajaran Diperbarui!', 'success');
       }
     }
@@ -1390,7 +1400,6 @@
       if (confirm(`Hapus mata pelajaran ${subj}?`)) {
         appData.subjects = appData.subjects.filter(s => s !== subj);
         saveLocalStorageData();
-        renderAdminMasterData();
         showToast('Mata Pelajaran Dihapus', 'info');
       }
     }
@@ -1406,8 +1415,6 @@
       if (id && name && cls) {
         appData.students.push({ id, name, class: cls });
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Siswa Baru Ditambahkan', 'success');
       }
     }
@@ -1428,8 +1435,6 @@
         student.name = newName;
         student.class = newClass;
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Data Siswa Diperbarui!', 'success');
       }
     }
@@ -1439,8 +1444,6 @@
       if (confirm(`Hapus siswa dengan NIS ${id}?`)) {
         appData.students = appData.students.filter(s => s.id !== id);
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast('Data Siswa Dihapus', 'info');
       }
     }
@@ -1494,8 +1497,6 @@
           }
         });
         saveLocalStorageData();
-        populateSelectDropdowns();
-        renderAdminMasterData();
         showToast(`Berhasil Memuat ${importedCount} Siswa dari CSV!`, 'success');
       };
       reader.readAsText(file);
@@ -1517,7 +1518,12 @@
             if (data) {
               appData = data;
               populateSelectDropdowns();
-              renderStudentPortal();
+              if (currentView === 'admin') {
+                if (currentAdminTab === 'master') renderAdminMasterData();
+                else if (currentAdminTab === 'dashboard') renderAdminDashboard();
+              } else {
+                renderStudentPortal();
+              }
             }
           });
         } catch (err) {
